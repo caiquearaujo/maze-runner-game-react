@@ -1,0 +1,49 @@
+{
+	"root": true,
+	"env": { "browser": true, "es2020": true },
+	"extends": [
+		"airbnb-base",
+		"airbnb-typescript",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:import/errors",
+		"plugin:import/warnings",
+		"plugin:import/typescript",
+		"plugin:react/recommended",
+		"plugin:react-hooks/recommended",
+		"prettier"
+	],
+	"plugins": ["import", "@typescript-eslint", "react", "prettier", "react-refresh"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": false,
+			"tsx": true
+		},
+		"project": ["tsconfig.json"]
+	},
+	"settings": {
+		"import/parsers": {
+			"@typescript-eslint/parser": [".ts", ".tsx"]
+		},
+		"import/resolver": {
+			"typescript": {
+				"project": "./tsconfig.json"
+			}
+		},
+		"react": {
+			"version": "detect"
+		}
+	},
+	"rules": {
+		"react-refresh/only-export-components": [
+			"warn",
+			{ "allowConstantExport": true }
+		],
+		"import/extensions": "off",
+		"max-statements": ["error", 25],
+		"prettier/prettier": "error"
+	}
+}

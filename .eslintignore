@@ -1,0 +1,11 @@
+/build
+/coverage
+/node_modules
+/test
+/debug
+/.jest
+/public
+
+*.config.js
+*.config.sample.js
+*.config.ts
