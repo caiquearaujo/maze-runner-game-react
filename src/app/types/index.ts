@@ -16,6 +16,7 @@ export type Level = {
 export type States = {
 	playing: boolean;
 	revealing: boolean;
+	won: boolean;
 };
 
 export type Resources = {
