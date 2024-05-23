@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import clsx from 'clsx';
 
 import useTimer from '../hooks/useTimer';
 import { GRID_TYPE } from '../engine/maze';
@@ -11,13 +10,25 @@ export type MazeContainerProps = {
 	maze: Maze;
 	width: number;
 	height: number;
+	visibility?: number;
 };
 
-const MazeContainer: React.FC<MazeContainerProps> = ({ maze, width, height }) => {
+const MazeContainer: React.FC<MazeContainerProps> = ({
+	maze,
+	width,
+	height,
+	visibility,
+}) => {
 	const { player, endGame } = useTimer();
 
 	const kindOfCell = useCallback(
 		(cell: number, x: number, y: number) => {
+			const distance = Math.max(Math.abs(player.x - x), Math.abs(player.y - y));
+
+			if (visibility && distance > visibility) {
+				return GRID_TYPE.WALL;
+			}
+
 			if (player.x === x && player.y === y) {
 				if (cell === GRID_TYPE.EXIT_BLOCK) {
 					endGame();
@@ -37,7 +48,7 @@ const MazeContainer: React.FC<MazeContainerProps> = ({ maze, width, height }) =>
 
 	return (
 		<div
-			className={clsx('grid gap-[2px]')}
+			className="grid"
 			style={{
 				gridTemplateRows: `repeat(${width}, 20px)`,
 				gridTemplateColumns: `repeat(${height}, 20px)`,
