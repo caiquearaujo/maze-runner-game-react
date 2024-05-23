@@ -40,7 +40,7 @@ export const TimerContext = createContext<TimerContextProps>({
 });
 
 const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const [level, setLevel] = useState<LevelLabel>('easy');
+	const [level, setLevel] = useState<LevelLabel>('hard');
 
 	const [timeInGame, setTimeInGame] = useState<number>(0);
 	const [interval, setInterval] = useState<number | undefined>(undefined);

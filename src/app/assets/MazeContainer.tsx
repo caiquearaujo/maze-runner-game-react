@@ -40,7 +40,11 @@ const MazeContainer: React.FC<MazeContainerProps> = ({
 			while (true) {
 				if (isWithinBounds(x0, y0)) {
 					cells.add(`${x0},${y0}`);
-					if (maze[y0][x0] === GRID_TYPE.WALL) break;
+					if (
+						maze[y0][x0] === GRID_TYPE.WALL ||
+						maze[y0][x0] === GRID_TYPE.MARKED_WALL
+					)
+						break;
 				} else {
 					break;
 				}
