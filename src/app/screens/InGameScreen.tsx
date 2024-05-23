@@ -1,12 +1,13 @@
 import React from 'react';
-import useTimer from '../hooks/useTimer';
+// import useTimer from '../hooks/useTimer';
+import MazeContainer from '../assets/MazeContainer';
 
 const InGameScreen: React.FC = () => {
 	// const { startGame, endGame, displayTime } = useTimer();
 
 	return (
 		<div className="w-full h-screen text-center flex items-center justify-center">
-			<p className="text-3xl sm:text-6xl">-- in game --</p>
+			<MazeContainer width={24} height={24} />
 		</div>
 	);
 };
