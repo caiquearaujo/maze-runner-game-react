@@ -44,14 +44,45 @@ const fill = (maze: Maze, x = 0, y = 0) => {
 
 const exit = (maze: Maze, width: number, height: number) => {
 	const exists = [
-		{ x: width - 1, y: Math.floor(Math.random() * height), type: 'r' },
-		{ x: Math.floor(Math.random() * width), y: height - 1, type: 'b' },
+		{
+			x: 0,
+			y: Math.max(
+				Math.floor(Math.random() * height - 1),
+				Math.floor(height * 0.8),
+			),
+			type: 'l',
+		},
+		{
+			x: width - 1,
+			y: Math.max(Math.floor(Math.random() * height - 1), 1),
+			type: 'r',
+		},
+		{
+			x: Math.max(Math.floor(Math.random() * width - 1), 1),
+			y: height - 1,
+			type: 'b',
+		},
+		{
+			x: Math.max(Math.floor(Math.random() * width - 1), Math.floor(width * 0.8)),
+			y: 0,
+			type: 't',
+		},
 	];
 
-	const position = exists[Math.floor(Math.random() * 2)];
+	const position = exists[Math.floor(Math.random() * 4)];
 	maze[position.y][position.x] = GRID_TYPE.EXIT_BLOCK;
 
 	switch (position.type) {
+		case 'l':
+			if (maze[position.y][position.x + 1] !== GRID_TYPE.PASSAGE) {
+				maze[position.y][position.x + 1] = GRID_TYPE.PASSAGE;
+			}
+			break;
+		case 't':
+			if (maze[position.y + 1][position.x] !== GRID_TYPE.PASSAGE) {
+				maze[position.y + 1][position.x] = GRID_TYPE.PASSAGE;
+			}
+			break;
 		case 'b':
 			if (maze[position.y - 1][position.x] !== GRID_TYPE.PASSAGE) {
 				maze[position.y - 1][position.x] = GRID_TYPE.PASSAGE;
