@@ -54,7 +54,7 @@ const InGameScreen: React.FC = () => {
 
 	return (
 		<div className="w-full h-screen text-center flex flex-col gap-6 items-center justify-center">
-			<MazeContainer maze={maze} width={25} height={25} visibility={2} />
+			<MazeContainer maze={maze} width={25} height={25} />
 			<MemoizedTimeDisplay />
 		</div>
 	);
