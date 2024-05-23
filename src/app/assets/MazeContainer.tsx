@@ -14,11 +14,15 @@ export type MazeContainerProps = {
 };
 
 const MazeContainer: React.FC<MazeContainerProps> = ({ maze, width, height }) => {
-	const { player } = useTimer();
+	const { player, endGame } = useTimer();
 
 	const kindOfCell = useCallback(
 		(cell: number, x: number, y: number) => {
 			if (player.x === x && player.y === y) {
+				if (cell === GRID_TYPE.EXIT_BLOCK) {
+					endGame();
+				}
+
 				return GRID_TYPE.PLAYER;
 			}
 

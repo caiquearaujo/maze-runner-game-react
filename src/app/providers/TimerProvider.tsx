@@ -78,6 +78,10 @@ const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	const displayTime = useMemo(() => {
 		const seconds = Math.floor((end - start) / 1000);
 
+		if (seconds < 0) {
+			return 'Starting game...';
+		}
+
 		if (seconds < 60) {
 			return `${seconds} seconds`;
 		}

@@ -5,13 +5,15 @@ import useTimer from '../hooks/useTimer';
 import MazeContainer from '../assets/MazeContainer';
 import { createMaze } from '../engine/maze';
 import { Direction, Maze } from '../types';
+import MemoizedTimeDisplay from '../assets/TimeDisplay';
 
 const InGameScreen: React.FC = () => {
-	const { player, movePlayerTo } = useTimer();
+	const { player, movePlayerTo, startGame } = useTimer();
 	const [maze, setMaze] = useState<Maze>([]);
 
 	const movePlayer = useCallback(
 		(direction: Direction) => {
+			// @todo fix when around not found
 			const around: Record<Direction, number> = {
 				left: maze[player.y][player.x - 1],
 				right: maze[player.y][player.x + 1],
@@ -46,12 +48,14 @@ const InGameScreen: React.FC = () => {
 	});
 
 	useEffect(() => {
+		startGame();
 		setMaze(createMaze(24, 24));
 	}, []);
 
 	return (
-		<div className="w-full h-screen text-center flex items-center justify-center">
+		<div className="w-full h-screen text-center flex flex-col gap-6 items-center justify-center">
 			<MazeContainer maze={maze} width={25} height={25} />
+			<MemoizedTimeDisplay />
 		</div>
 	);
 };
