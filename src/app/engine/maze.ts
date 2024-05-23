@@ -100,6 +100,7 @@ const close = (maze: Maze, width: number, height: number) => {
 
 	for (let y = 0; y <= height; y += 1) {
 		maze[y].unshift(GRID_TYPE.WALL);
+		maze[y][maze[y].length - 1] = GRID_TYPE.WALL;
 	}
 };
 

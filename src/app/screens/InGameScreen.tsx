@@ -6,9 +6,10 @@ import MazeContainer from '../assets/MazeContainer';
 import { createMaze } from '../engine/maze';
 import { Direction, Maze } from '../types';
 import MemoizedTimeDisplay from '../assets/TimeDisplay';
+import MemoizedGameHeader from '../assets/GameHeader';
 
 const InGameScreen: React.FC = () => {
-	const { player, movePlayerTo, startGame } = useTimer();
+	const { level, player, movePlayerTo, startGame } = useTimer();
 	const [maze, setMaze] = useState<Maze>([]);
 
 	const movePlayer = useCallback(
@@ -49,13 +50,20 @@ const InGameScreen: React.FC = () => {
 
 	useEffect(() => {
 		startGame();
-		setMaze(createMaze(24, 24));
-	}, []);
+		setMaze(createMaze(level.width - 1, level.height - 1));
+	}, [level.label]);
 
 	return (
-		<div className="w-full h-screen text-center flex flex-col gap-6 items-center justify-center">
-			<MazeContainer maze={maze} width={25} height={25} />
-			<MemoizedTimeDisplay />
+		<div className="w-full h-screen text-center flex flex-col gap-6 items-center justify-center bg-slate-950">
+			<MemoizedGameHeader level={level} />
+			<MazeContainer
+				maze={maze}
+				width={level.width}
+				height={level.height}
+				size={level.size}
+				visibility={level.visibility}
+			/>
+			<MemoizedTimeDisplay className="text-white" />
 		</div>
 	);
 };

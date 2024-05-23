@@ -316,4 +316,5 @@ $RECYCLE.BIN/
 *.lnk
 
 /debug
+/.vscode/settings.json
 # End of https://www.toptal.com/developers/gitignore/api/node,linux,macos,react,windows,visualstudiocode,test

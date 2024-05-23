@@ -10,14 +10,16 @@ export type MazeContainerProps = {
 	maze: Maze;
 	width: number;
 	height: number;
+	size: number;
 	visibility?: number;
 };
 
 const MazeContainer: React.FC<MazeContainerProps> = ({
 	maze,
+	visibility,
 	width,
 	height,
-	visibility,
+	size = 20,
 }) => {
 	const { player, endGame } = useTimer();
 	const [fov, setFov] = React.useState(new Set<string>());
@@ -123,8 +125,8 @@ const MazeContainer: React.FC<MazeContainerProps> = ({
 		<div
 			className="grid"
 			style={{
-				gridTemplateRows: `repeat(${width}, 20px)`,
-				gridTemplateColumns: `repeat(${height}, 20px)`,
+				gridTemplateRows: `repeat(${width}, ${size}px)`,
+				gridTemplateColumns: `repeat(${height}, ${size}px)`,
 			}}>
 			{maze.map((row, y) =>
 				row.map((cell, x) => {
@@ -135,6 +137,7 @@ const MazeContainer: React.FC<MazeContainerProps> = ({
 							type={kindOf}
 							x={x}
 							y={y}
+							size={size}
 						/>
 					);
 				}),

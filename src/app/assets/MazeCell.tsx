@@ -7,17 +7,19 @@ export type MazeCellProps = {
 	type: number;
 	x: number;
 	y: number;
+	size: number;
 };
 
-const MazeCell: React.FC<MazeCellProps> = ({ type }) => (
+const MazeCell: React.FC<MazeCellProps> = ({ type, size }) => (
 	<div
 		className={clsx(
-			'w-5 h-5 border border-solid',
+			'border border-solid',
 			type === GRID_TYPE.PASSAGE && 'bg-white border-white',
-			type === GRID_TYPE.WALL && 'bg-black border-black',
+			type === GRID_TYPE.WALL && 'bg-gray-900 border-slate-900',
 			type === GRID_TYPE.EXIT_BLOCK && 'bg-green-500 border-green-500',
 			type === GRID_TYPE.PLAYER && 'bg-indigo-500 border-indigo-600',
 		)}
+		style={{ width: `${size}px`, height: `${size}px` }}
 	/>
 );
 

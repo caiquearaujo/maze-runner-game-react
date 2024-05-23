@@ -1,28 +1,35 @@
 import React, { createContext, useMemo, useState } from 'react';
-import { Direction, Position } from '../types';
+import { Direction, Level, LevelLabel, Position } from '../types';
 import { GRID_TYPE } from '../engine/maze';
+import levels from '../engine/levels';
 
 export type TimerContextProps = {
+	level: Level;
 	player: Position;
 	playing: boolean;
 	started: boolean;
 	startGame: () => void;
 	endGame: () => void;
 	movePlayerTo: (direction: Direction, around: Record<Direction, number>) => void;
+	changeLevelTo: (lv: LevelLabel) => void;
 	displayTime: string;
 };
 
 export const TimerContext = createContext<TimerContextProps>({
+	level: levels.easy,
 	player: { x: 1, y: 1 },
 	playing: false,
 	started: false,
 	startGame: () => {},
 	endGame: () => {},
 	movePlayerTo: () => {},
+	changeLevelTo: () => {},
 	displayTime: '',
 });
 
 const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+	const [level, setLevel] = useState<LevelLabel>('easy');
+
 	const [start, setStart] = useState<number>(0);
 	const [end, setEnd] = useState<number>(0);
 	const [interval, setInterval] = useState<number | undefined>(undefined);
@@ -75,6 +82,10 @@ const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 		});
 	};
 
+	const changeLevelTo = (lv: LevelLabel) => {
+		setLevel(lv);
+	};
+
 	const displayTime = useMemo(() => {
 		const seconds = Math.floor((end - start) / 1000);
 
@@ -94,12 +105,14 @@ const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 	return (
 		<TimerContext.Provider
 			value={{
+				level: levels[level],
 				player,
 				started,
 				playing,
 				startGame,
 				endGame: stopGame,
 				movePlayerTo,
+				changeLevelTo,
 				displayTime,
 			}}>
 			{children}
