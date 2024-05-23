@@ -89,16 +89,12 @@ const MazeContainer: React.FC<MazeContainerProps> = ({
 			}
 
 			if (player.x === x && player.y === y) {
-				if (cell === GRID_TYPE.EXIT_BLOCK) {
-					endGame();
-				}
-
 				return GRID_TYPE.PLAYER;
 			}
 
 			return cell;
 		},
-		[player, fov],
+		[player, fov, endGame],
 	);
 
 	useEffect(() => {
@@ -107,15 +103,7 @@ const MazeContainer: React.FC<MazeContainerProps> = ({
 		}
 
 		setFov(calculateVisibility());
-	}, [maze.length]);
-
-	useEffect(() => {
-		if (maze.length === 0) {
-			return;
-		}
-
-		setFov(calculateVisibility());
-	}, [player]);
+	}, [maze.length, player, visibility]);
 
 	if (maze.length === 0) {
 		return null;

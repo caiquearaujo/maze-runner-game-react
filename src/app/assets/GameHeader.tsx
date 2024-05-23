@@ -1,20 +1,21 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import { Level } from '../types';
+import { Level, Resources } from '../types';
 import ArrowKeyIcon from '../icons/ArrowKeyIcon';
 import TwoKeyIcon from '../icons/TwoKeyIcon';
 import OneKeyIcon from '../icons/OneKeyIcon';
 
 export type GameHeaderProps = {
 	level: Level;
+	resources: Resources;
 	className?: string;
 };
 
-const GameHeader: React.FC<GameHeaderProps> = ({ level, className }) => (
+const GameHeader: React.FC<GameHeaderProps> = ({ level, resources, className }) => (
 	<div
 		className={clsx(
-			'flex flex-row gap-8 justify-between items-center text-white text-left',
+			'flex flex-row gap-8 justify-between items-end text-white text-left',
 			className,
 		)}>
 		<div>
@@ -30,17 +31,23 @@ const GameHeader: React.FC<GameHeaderProps> = ({ level, className }) => (
 				<ArrowKeyIcon direction="right" className="w-6 h-auto fill-white" />
 			</div>
 		</div>
-		<div>
+		<div className="flex flex-col">
+			<span className="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 mb-2 text-xs font-medium text-red-400 ring-1 ring-inset ring-red-400/20">
+				+{level.reveal_cost}m
+			</span>
 			<span className="text-xs uppercase">Reveals</span>
 			<div className="flex flex-row items-center gap-1">
-				<p>{level.revels}</p>
+				<p>{resources.reveals}</p>
 				<OneKeyIcon className="w-6 h-auto fill-white" />
 			</div>
 		</div>
-		<div>
+		<div className="flex flex-col">
+			<span className="inline-flex items-center rounded-md bg-red-400/10 px-2 py-1 mb-2 text-xs font-medium text-red-400 ring-1 ring-inset ring-red-400/20">
+				+{level.marker_cost}s
+			</span>
 			<span className="text-xs uppercase">Markers</span>
 			<div className="flex flex-row items-center gap-1">
-				<p>{level.markers}</p>
+				<p>{resources.markers}</p>
 				<TwoKeyIcon className="w-6 h-auto fill-white" />
 			</div>
 		</div>

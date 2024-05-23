@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { Maze } from '../types';
+import { Maze, Position } from '../types';
 
 const GRID_TYPE = {
 	WALL: 0,
+	MARKED_WALL: 4,
 	PASSAGE: 1,
 	EXIT_BLOCK: 2,
 	PLAYER: 3,
@@ -93,6 +94,8 @@ const exit = (maze: Maze, width: number, height: number) => {
 				maze[position.y][position.x - 1] = GRID_TYPE.PASSAGE;
 			}
 	}
+
+	return position;
 };
 
 const close = (maze: Maze, width: number, height: number) => {
@@ -104,15 +107,23 @@ const close = (maze: Maze, width: number, height: number) => {
 	}
 };
 
-const createMaze = (width: number, height: number): Maze => {
+const createMaze = (
+	width: number,
+	height: number,
+): { maze: Maze; exit: Position } => {
 	const maze = new Array(height)
 		.fill(null)
 		.map(() => new Array(width).fill(GRID_TYPE.WALL));
 
 	fill(maze);
 	close(maze, width, height);
-	exit(maze, width + 1, height + 1);
-	return maze;
+
+	const exitPosition = exit(maze, width + 1, height + 1);
+
+	return {
+		maze,
+		exit: exitPosition,
+	};
 };
 
 export { createMaze, GRID_TYPE };

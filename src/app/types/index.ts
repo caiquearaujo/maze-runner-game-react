@@ -5,10 +5,22 @@ export type Level = {
 	width: number;
 	height: number;
 	size: number;
-	revels: number;
+	reveals: number;
+	reveal_cost: number;
 	time_limit: number;
 	markers: number;
+	marker_cost: number;
 	visibility: number;
+};
+
+export type States = {
+	playing: boolean;
+	revealing: boolean;
+};
+
+export type Resources = {
+	reveals: number;
+	markers: number;
 };
 
 export type LevelLabel = 'easy' | 'medium' | 'hard';

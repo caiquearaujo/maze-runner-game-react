@@ -1,61 +1,78 @@
-import React, { createContext, useMemo, useState } from 'react';
-import { Direction, Level, LevelLabel, Position } from '../types';
+import React, { createContext, useCallback, useMemo, useState } from 'react';
+import { Direction, Level, LevelLabel, Position, Resources, States } from '../types';
 import { GRID_TYPE } from '../engine/maze';
 import levels from '../engine/levels';
 
 export type TimerContextProps = {
 	level: Level;
 	player: Position;
-	playing: boolean;
+	states: States;
+	resources: Resources;
 	started: boolean;
 	startGame: () => void;
 	endGame: () => void;
 	movePlayerTo: (direction: Direction, around: Record<Direction, number>) => void;
 	changeLevelTo: (lv: LevelLabel) => void;
+	revealMaze: () => void;
+	markMaze: () => void;
 	displayTime: string;
 };
 
 export const TimerContext = createContext<TimerContextProps>({
 	level: levels.easy,
 	player: { x: 1, y: 1 },
-	playing: false,
+	states: { playing: false, revealing: false },
+	resources: { reveals: 0, markers: 0 },
 	started: false,
 	startGame: () => {},
 	endGame: () => {},
 	movePlayerTo: () => {},
 	changeLevelTo: () => {},
+	revealMaze: () => {},
+	markMaze: () => {},
 	displayTime: '',
 });
 
 const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [level, setLevel] = useState<LevelLabel>('easy');
 
-	const [start, setStart] = useState<number>(0);
-	const [end, setEnd] = useState<number>(0);
+	const [timeInGame, setTimeInGame] = useState<number>(0);
 	const [interval, setInterval] = useState<number | undefined>(undefined);
 
 	const [started, setStarted] = useState<boolean>(false);
-	const [playing, setPlaying] = useState<boolean>(false);
 	const [player, setPlayer] = useState<Position>({ x: 1, y: 1 });
 
-	const updateTime = () => {
-		setEnd(Date.now());
-	};
+	const [states, setStates] = useState<States>({
+		playing: false,
+		revealing: false,
+	});
+
+	const [resources, setResources] = useState<Resources>({
+		reveals: 0,
+		markers: 0,
+	});
 
 	const startGame = () => {
 		setStarted(true);
-		setPlaying(true);
+		setStates({ revealing: false, playing: true });
 
-		setStart(Date.now());
+		setResources({
+			reveals: levels[level].reveals,
+			markers: levels[level].markers,
+		});
 
 		window.clearInterval(interval);
-		setInterval(() => window.setInterval(updateTime, 1000));
+		setInterval(
+			window.setInterval(() => {
+				setTimeInGame(current => current + 1);
+			}, 1000),
+		);
 	};
 
 	const stopGame = () => {
 		window.clearInterval(interval);
-		setInterval(undefined);
-		setPlaying(false);
+		setStates({ revealing: false, playing: false });
+		setResources({ reveals: 0, markers: 0 });
 	};
 
 	const movePlayerTo = (
@@ -63,7 +80,10 @@ const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 		around: Record<Direction, number>,
 	) => {
 		setPlayer(current => {
-			if (around[direction] === GRID_TYPE.WALL) {
+			if (
+				around[direction] === GRID_TYPE.WALL ||
+				around[direction] === GRID_TYPE.MARKED_WALL
+			) {
 				return current;
 			}
 
@@ -86,21 +106,46 @@ const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 		setLevel(lv);
 	};
 
-	const displayTime = useMemo(() => {
-		const seconds = Math.floor((end - start) / 1000);
+	const revealMaze = useCallback(() => {
+		if (states.revealing === false && resources.reveals > 0) {
+			setResources(current => ({
+				...current,
+				reveals: current.reveals - 1,
+			}));
 
-		if (seconds < 0) {
+			setStates({ playing: true, revealing: true });
+			setTimeInGame(current => current + levels[level].reveal_cost * 60);
+
+			setTimeout(() => {
+				setStates(current => ({ ...current, revealing: false }));
+			}, levels[level].reveals * 1000);
+		}
+	}, [states, resources]);
+
+	const markMaze = useCallback(() => {
+		if (resources.markers > 0) {
+			setResources(current => ({
+				...current,
+				markers: current.markers - 1,
+			}));
+
+			setTimeInGame(current => current + levels[level].marker_cost * 1);
+		}
+	}, [resources]);
+
+	const displayTime = useMemo(() => {
+		if (timeInGame < 0) {
 			return 'Starting game...';
 		}
 
-		if (seconds < 60) {
-			return `${seconds} seconds`;
+		if (timeInGame < 60) {
+			return `${timeInGame} seconds`;
 		}
 
-		const minutes = Math.floor(seconds / 60);
+		const minutes = Math.floor(timeInGame / 60);
 
-		return `${minutes} minutes and ${seconds % 60} seconds`;
-	}, [start, end]);
+		return `${minutes} minutes and ${timeInGame % 60} seconds`;
+	}, [timeInGame]);
 
 	return (
 		<TimerContext.Provider
@@ -108,11 +153,14 @@ const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 				level: levels[level],
 				player,
 				started,
-				playing,
+				states,
+				resources,
 				startGame,
 				endGame: stopGame,
 				movePlayerTo,
 				changeLevelTo,
+				revealMaze,
+				markMaze,
 				displayTime,
 			}}>
 			{children}

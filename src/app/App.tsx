@@ -7,7 +7,10 @@ import EndScreen from './screens/EndScreen';
 import InGameScreen from './screens/InGameScreen';
 
 const App: React.FC = () => {
-	const { started, playing } = useTimer();
+	const {
+		started,
+		states: { playing },
+	} = useTimer();
 
 	if (started === false) {
 		return (
